@@ -10,11 +10,16 @@ using namespace std;
 int main()
 {
     cout << "Hexadecimal!\n";
-    Binary l1;
-    LiczbaHex l2;
-    l2 = LiczbaHex("fffffffffffffffffffffffff");
-    l2.print();
-    l2.add("1");
-    l2.print();
+    LiczbaHex l1, l2, l3, l4;
+
+    l1 = LiczbaHex("fffffffffffffffffffffffff");
+    l2 = LiczbaHex("1");
+
+    l3 = l1 + l2;
+    l3.print();
+
+    l4 = LiczbaHex("ffff") + LiczbaHex("1");
+    l4.print();
+
     return 0;
 }

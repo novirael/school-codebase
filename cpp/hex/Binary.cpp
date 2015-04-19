@@ -42,7 +42,12 @@ void Binary::print() {
 string Binary::get_value() {
    return number;
 }
-string Binary::add(string value) {
+
+Binary Binary::operator+ (Binary bin) {
+    return add(bin);
+}
+Binary Binary::add(Binary bin) {
+    string value = bin.number;
     string result = "";
     int excess = 0;
     if (value.length() < number.length()){
@@ -73,13 +78,6 @@ string Binary::add(string value) {
     if (result.length() % 4 != 0) {
         result = align_with_zeros(result, 4 - (result.length() % 4));
     }
-    
-    number = result;
-    return result;
-}
-string Binary::sub(string value) {
-    return value;
-}
-string Binary::multi(string value) {
-    return value;
+
+    return Binary(result);
 }

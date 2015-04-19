@@ -12,6 +12,9 @@ using namespace std;
 LiczbaHex::LiczbaHex() {
     binary = Binary();
 }
+LiczbaHex::LiczbaHex(Binary bin) {
+    binary = bin;
+}
 LiczbaHex::LiczbaHex(string num) {
     allowed_signs = "0123456789abcdef"; 
     try {
@@ -52,12 +55,15 @@ string LiczbaHex::binary_to_hex(string bin) {
 void LiczbaHex::print() {
     cout << "0x" << binary_to_hex(binary.get_value()) << '\n';
 }
-string LiczbaHex::add(string value) {
-    return binary_to_hex(binary.add(value));
+string LiczbaHex::get_value() {
+    return binary_to_hex(
+        binary.get_value()
+    );
 }
-string LiczbaHex::sub(string value) {
-    return binary_to_hex(binary.sub(value));
+
+LiczbaHex LiczbaHex::operator+ (LiczbaHex value) {
+    return add(value);
 }
-string LiczbaHex::multi(string value) {
-    return binary.multi(value);
+LiczbaHex LiczbaHex::add(LiczbaHex value) {
+    return LiczbaHex(binary + value.binary); 
 }
