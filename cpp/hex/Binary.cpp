@@ -46,7 +46,7 @@ string Binary::get_value() {
 Binary Binary::operator+ (Binary bin) {
     return add(bin);
 }
-Binary Binary::add(Binary bin) {
+Binary Binary::add(Binary bin) { // doesn't work correct
     string value = bin.number;
     string result = "";
     int excess = 0;
@@ -80,4 +80,68 @@ Binary Binary::add(Binary bin) {
     }
 
     return Binary(result);
+}
+
+Binary Binary::operator- (Binary bin) {
+    return sub(bin);
+}
+Binary Binary::sub(Binary bin) {
+    string value = bin.number;
+    string result = "";
+    int excess = 0;
+    if (value.length() < number.length()){
+        value = align_with_zeros(value, number.length() - value.length());
+    }
+    else {
+        number = align_with_zeros(number, value.length() - number.length());
+    }
+    
+    for (int it=number.length(); it >= 0; it--) {
+        if (number[it] == '1' && value[it] == '1') {
+            if (excess > 0) {
+                result.insert(0, "1");
+                excess -= 1;
+            }
+            else {
+                result.insert(0, "0");
+            }
+        }
+        else if (number[it] == '0' && value[it] == '1') {
+            if (excess > 0) {
+                result.insert(0, "0");
+            }
+            else {
+                result.insert(0, "1");
+                excess += 1;
+            }
+        }
+        else if (number[it] == '1' && value[it] == '0') {
+            if (excess > 0) {
+                result.insert(0, "0");
+                excess -= 1;
+            }
+            else {
+                result.insert(0, "1");
+            }
+        }
+        else if (number[it] == '0' && value[it] == '0') {
+            if (excess > 0) {
+                result.insert(0, "1");
+                excess -= 1;
+            }
+        }
+    }
+
+    if (result.length() % 4 != 0) {
+        result = align_with_zeros(result, 4 - (result.length() % 4));
+    }
+
+    return Binary(result);
+}
+
+Binary Binary::operator* (Binary bin) {
+    return multi(bin);
+}
+Binary Binary::multi(Binary bin) {
+    return bin;
 }

@@ -1,4 +1,4 @@
-#include "LiczbaHex.h"
+#include "Hexadecimal.h"
 #include "Binary.h"
 
 #include "IncorrectValueException.h"
@@ -9,13 +9,15 @@
 using namespace std;
 
 
-LiczbaHex::LiczbaHex() {
+Hexadecimal::Hexadecimal() {
     binary = Binary();
+    number = 'f';
 }
-LiczbaHex::LiczbaHex(Binary bin) {
+Hexadecimal::Hexadecimal(Binary bin) {
     binary = bin;
+    number = 'f';
 }
-LiczbaHex::LiczbaHex(string num) {
+Hexadecimal::Hexadecimal(string num) {
     allowed_signs = "0123456789abcdef"; 
     try {
         for (int it=0; it < num.length(); it++) {
@@ -30,9 +32,10 @@ LiczbaHex::LiczbaHex(string num) {
     }
 
     binary = Binary(Binary::hex_to_binary(num));
+    number = num;
 }
 
-string LiczbaHex::binary_to_hex(string bin) {
+string Hexadecimal::binary_to_hex(string bin) {
     string hex_rep = "";
     string allowed_hex = "0123456789abcdef";
     string tab[16] = {
@@ -52,18 +55,47 @@ string LiczbaHex::binary_to_hex(string bin) {
     return hex_rep;
 }
 
-void LiczbaHex::print() {
+void Hexadecimal::print() {
     cout << "0x" << binary_to_hex(binary.get_value()) << '\n';
 }
-string LiczbaHex::get_value() {
+string Hexadecimal::get_value() {
     return binary_to_hex(
         binary.get_value()
     );
 }
 
-LiczbaHex LiczbaHex::operator+ (LiczbaHex value) {
+Hexadecimal Hexadecimal::operator+ (Hexadecimal value) {
     return add(value);
 }
-LiczbaHex LiczbaHex::add(LiczbaHex value) {
-    return LiczbaHex(binary + value.binary); 
+Hexadecimal Hexadecimal::add(Hexadecimal value) {
+    return Hexadecimal(binary + value.binary);
+}
+
+Hexadecimal Hexadecimal::operator- (Hexadecimal value) {
+    return sub(value);
+}
+Hexadecimal Hexadecimal::sub(Hexadecimal value) {
+    return Hexadecimal(binary - value.binary);
+}
+
+Hexadecimal Hexadecimal::operator* (Hexadecimal value) {
+    return multi(value);
+}
+Hexadecimal Hexadecimal::multi(Hexadecimal value) {
+    return Hexadecimal(binary * value.binary);
+}
+
+
+void Hexadecimal::shuffle(Hexadecimal *n) {
+    string result = "";
+    int limit = n -> number.length() > number.length() ? n -> number.length() : number.length();
+    for (int it=0; it < limit; it++) {
+        if (number.length() > it) {
+            result += number[it];
+        }
+        if (n -> number.length() > it) {
+            result += n -> number[it];
+        }
+    }
+    cout << result << '\n';
 }
