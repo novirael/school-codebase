@@ -1,5 +1,10 @@
-# Cpp
+# Compiled
 *.out
+out/
 
 # Tmp files
 *~
+
+# Enviroments
+*.iml
+.idea/
