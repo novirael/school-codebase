@@ -98,12 +98,10 @@ let rec pierw (a, n, k) = if k = 0 then a
 (*** PRACOWNIA 4 ***)
 
 
-(* ZAD: Drzewo BST *)
-(* todo zamiast int'a powinna byc krotka *)
+(* ZAD1: Drzewo BST przechowujace sam klucz *)
 
 type 'a option = Some of int | None;;
 type 'b tree = Empty | Node of 'b * 'b tree * 'b tree;;
-
 
 let root = Node (10, Empty, Empty);;
 
@@ -112,4 +110,15 @@ let rec insert (btree, x) = match btree with
     | Node(y, left, right) -> if x <= y then Node(y, insert (left, x), right)
                                 else Node(y, left, insert (right, x));;
 
+
+(* ZAD1: Drzewo BST przechowujace krotke *)
+
+type 'c option = Pair of int * string | None;;
+
+let root2 = Node ((10, "Ala"), Empty, Empty);;
+
+let rec insert2 (btree, (x, a)) = match btree with
+    | Empty -> Node((x, a), Empty, Empty)
+    | Node((y, b), left, right) -> if x <= y then Node((y, b), insert (left, (x, a)), right)
+                                else Node((y, b), left, insert (right, (x, a)));;
 
