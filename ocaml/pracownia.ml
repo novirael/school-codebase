@@ -100,6 +100,7 @@ let rec pierw (a, n, k) = if k = 0 then a
 
 (* ZAD1: Drzewo BST przechowujace sam klucz *)
 
+(*
 type 'a option = Some of int | None;;
 type 'b tree = Empty | Node of 'b * 'b tree * 'b tree;;
 
@@ -108,17 +109,36 @@ let root = Node (10, Empty, Empty);;
 let rec insert (btree, x) = match btree with
     | Empty -> Node(x, Empty, Empty)
     | Node(y, left, right) -> if x <= y then Node(y, insert (left, x), right)
-                                else Node(y, left, insert (right, x));;
+                              else Node(y, left, insert (right, x));;
+*)
+
+(* ZAD2: Drzewo BST przechowujace krotke *)
+
+type 'a option = Some of 'a | None;;
+type 'b tree = Empty | Node of 'b * 'b tree * 'b tree;;
+
+let root = Node (Some (10, "Ala"), Empty, Empty);;
+
+let rec insert (btree, Some (x, a)) = match btree with
+    | Empty -> Node(Some (x, a), Empty, Empty)
+    | Node(Some (y, b), left, right) -> if x <= y then Node(Some (y, b), insert (left, Some (x, a)), right)
+                                        else Node(Some (y, b), left, insert (right, Some (x, a)));;
 
 
-(* ZAD1: Drzewo BST przechowujace krotke *)
+(*** PRACOWNIA 5 ***)
 
-type 'c option = Pair of int * string | None;;
+(* ZAD1: find dla drzewa BST *)
 
-let root2 = Node ((10, "Ala"), Empty, Empty);;
+let rec find (btree, x) = match btree with
+    | Empty -> None
+    | Node(Some (y, b), left, right) -> if x == y then Some b 
+                                        else if x < y then find(left, x)
+                                        else find(right, y);;
 
-let rec insert2 (btree, (x, a)) = match btree with
-    | Empty -> Node((x, a), Empty, Empty)
-    | Node((y, b), left, right) -> if x <= y then Node((y, b), insert (left, (x, a)), right)
-                                else Node((y, b), left, insert (right, (x, a)));;
+
+let root2 = Node (Some (10, "Ala"), Node(Some (9, "kot"), Empty, Empty), Node(Some (11, "mysza"), Empty, Empty));;
+
+
+(* ZAD2: Napisz metode ktora zamieni drzewo binarne na drzewo planarne *)
+
 
