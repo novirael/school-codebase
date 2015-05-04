@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <string>
+#include <vector>
 
 
 using namespace std;
@@ -31,6 +32,17 @@ string Tree::split(string word, string by_letters) {
     return splitted_word;
 }
 
+int Tree::get_bracket_end(string word, string brackets, int first) {
+    int counter = 0;
+    for (int it=first; it < word.length(); it++) {
+        if (word[it] == brackets[0]) counter++;
+        else if (word[it] == brackets[1]) counter--;
+        if (word[it] == brackets[1] && counter == 0)
+            return it;
+    }
+    return -1;
+}
+
 int Tree::get_bracket_end(string word, string brackets) {
     int counter = 0;
     for (int it=0; it < word.length(); it++) {
@@ -41,6 +53,7 @@ int Tree::get_bracket_end(string word, string brackets) {
     }
     return -1;
 }
+
 int Tree::get_bracket_begin(string word, string brackets) {
     if (word.find('[') == string::npos)
         return -1;
@@ -49,52 +62,66 @@ int Tree::get_bracket_begin(string word, string brackets) {
 
 int Tree::validate(string word) {
     string splitted_word = split(word, " \n\t");
-    int len = splitted_word.length(), pos;
+    int len = splitted_word.length(), pos, first, last;
     string name, quantity, objects;
+    vector <string> items;
 
-    // check brackets 
-    if (splitted_word[0] != '[' || get_bracket_end(splitted_word, "[]") == -1) {
-        return -1;
-    }
-
-    // miss brackets
-    splitted_word = splitted_word.substr(1, get_bracket_end(splitted_word, "[]") - 1);
-
-    // get comma pos
-    pos = splitted_word.find(',');
-
-    // check quotes
-    if (splitted_word[0] != '"' || splitted_word[pos - 1] != '"') {
-        return -1;
-    }
-
-    // get name without quotes
-    name = splitted_word.substr(1, pos - 2);
-    cout << name << ' ';
-
-    // miss name and comma 
-    splitted_word = splitted_word.substr(pos + 1);
-
-    // get comma pos
-    pos = splitted_word.find(',');
-
-    // get quantity
-    quantity = splitted_word.substr(0, pos);
-    cout << quantity << ' ';
-
-    // miss comma
-    splitted_word = splitted_word.substr(pos + 1);
-
-    // check roundbrackets 
-    if (splitted_word[0] != '(' || get_bracket_end(splitted_word, "()") == -1) {
-        return -1;
-    }
-
-    // miss brackets
-    objects = splitted_word.substr(1, get_bracket_end(splitted_word, "()") - 1);
-    cout << objects << '\n';
-
-    validate(objects);
+    first = 0;
+    last = get_bracket_end(splitted_word, "[]");
     
+    while (first < splitted_word.length() && splitted_word[first] == '[' && last != -1) {
+        items.push_back(splitted_word.substr(first, last + 1));
+        first = last + 2; // except 
+        last = get_bracket_end(splitted_word, "[]", first);
+    }
+
+    for(int i=0; i < items.size(); i++) {
+        splitted_word = items[i];
+
+        // check brackets
+        if (splitted_word[0] != '[' || get_bracket_end(splitted_word, "[]") == -1) {
+            return -1;
+        }
+
+        // miss brackets
+        splitted_word = splitted_word.substr(1, get_bracket_end(splitted_word, "[]") - 1);
+
+        // get comma pos
+        pos = splitted_word.find(',');
+
+        // check quotes
+        if (splitted_word[0] != '"' || splitted_word[pos - 1] != '"') {
+            return -1;
+        }
+
+        // get name without quotes
+        name = splitted_word.substr(1, pos - 2);
+        cout << name << ' ';
+
+        // miss name and comma 
+        splitted_word = splitted_word.substr(pos + 1);
+
+        // get comma pos
+        pos = splitted_word.find(',');
+
+        // get quantity
+        quantity = splitted_word.substr(0, pos);
+        cout << quantity << ' ';
+
+        // miss comma
+        splitted_word = splitted_word.substr(pos + 1);
+
+        // check roundbrackets 
+        if (splitted_word[0] != '(' || get_bracket_end(splitted_word, "()") == -1) {
+            return -1;
+        }
+
+        // miss brackets
+        objects = splitted_word.substr(1, get_bracket_end(splitted_word, "()") - 1);
+        cout << objects << '\n';
+
+        validate(objects);
+    }
+
     return 0;    
 }

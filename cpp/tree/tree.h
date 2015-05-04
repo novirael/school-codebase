@@ -20,6 +20,7 @@ public:
     
     static string split(string word, string by_letters);
     static int get_bracket_end(string word, string brackets);
+    static int get_bracket_end(string word, string brackets, int first);
     static int get_bracket_begin(string word, string brackets);
 };
 
