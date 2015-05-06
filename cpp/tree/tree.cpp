@@ -60,27 +60,32 @@ int Tree::get_bracket_begin(string word, string brackets) {
     return word.find('[');
 }
 
-int Tree::validate(string word) {
+bool Tree::validate(string word) {
     string splitted_word = split(word, " \n\t");
+    
     int len = splitted_word.length(), pos, first, last;
     string name, quantity, objects;
     vector <string> items;
-
+    bool result = true;
     first = 0;
     last = get_bracket_end(splitted_word, "[]");
-    
+
+    if (splitted_word[0] != '[' || last == -1) {
+        return false;
+    }
+
     while (first < splitted_word.length() && splitted_word[first] == '[' && last != -1) {
         items.push_back(splitted_word.substr(first, last + 1));
         first = last + 2; // except 
         last = get_bracket_end(splitted_word, "[]", first);
-    }
 
+    }
     for(int i=0; i < items.size(); i++) {
         splitted_word = items[i];
 
         // check brackets
         if (splitted_word[0] != '[' || get_bracket_end(splitted_word, "[]") == -1) {
-            return -1;
+            return false;
         }
 
         // miss brackets
@@ -91,12 +96,11 @@ int Tree::validate(string word) {
 
         // check quotes
         if (splitted_word[0] != '"' || splitted_word[pos - 1] != '"') {
-            return -1;
+            return false;
         }
 
         // get name without quotes
         name = splitted_word.substr(1, pos - 2);
-        cout << name << ' ';
 
         // miss name and comma 
         splitted_word = splitted_word.substr(pos + 1);
@@ -106,22 +110,22 @@ int Tree::validate(string word) {
 
         // get quantity
         quantity = splitted_word.substr(0, pos);
-        cout << quantity << ' ';
 
         // miss comma
         splitted_word = splitted_word.substr(pos + 1);
 
         // check roundbrackets 
         if (splitted_word[0] != '(' || get_bracket_end(splitted_word, "()") == -1) {
-            return -1;
+            return false;
         }
 
         // miss brackets
         objects = splitted_word.substr(1, get_bracket_end(splitted_word, "()") - 1);
-        cout << objects << '\n';
 
-        validate(objects);
+        if (objects != "") {
+            result &= validate(objects);
+        }
     }
 
-    return 0;    
+    return result;
 }

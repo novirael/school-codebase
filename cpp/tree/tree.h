@@ -15,7 +15,7 @@ public:
     Tree();
     Tree(Node* node);
 
-    int validate(string word);
+    bool validate(string word);
     void parse();
     
     static string split(string word, string by_letters);

@@ -12,6 +12,6 @@ int main()
     cout << "Drzewo pakowania!\n";
     
     Tree tree;
-    string text = "   [\"Paleta\", 1, ([\"karton A\", 10, ([\"detal A\", 20, ()], [\"detal B\", 10, ()])], [\"karton B\", 4, ([\"karton D\", 5, ([\"Detal D\", 6, ()])])])]";
-    tree.validate(text);
+    string text = "   [\"Paleta\", 1, ([\"karton A\", 10, ([\"detal A\", 20, ()], [\"detal B\", 10, (\"\"0)])], [\"karton B\", 4, ([\"karton D\", 5, ([\"Detal D\", 6, ()])])])]";
+    cout << tree.validate(text) << '\n';
 }
