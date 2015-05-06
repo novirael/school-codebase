@@ -9,19 +9,21 @@ using namespace std;
 
 
 class Tree {
+
 private:
     Node* root;
+
 public:
     Tree();
     Tree(Node* node);
+    Tree(string word);
 
-    bool validate(string word);
-    void parse();
+    bool is_valid(string word);
+    void parse(string word);
     
     static string split(string word, string by_letters);
-    static int get_bracket_end(string word, string brackets);
-    static int get_bracket_end(string word, string brackets, int first);
-    static int get_bracket_begin(string word, string brackets);
+    static unsigned long get_bracket_end(string word, string brackets);
+    static unsigned long get_bracket_end(string word, string brackets, unsigned long first);
 };
 
 #endif

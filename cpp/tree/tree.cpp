@@ -14,7 +14,19 @@ Tree::Tree() {
 Tree::Tree(Node* node) {
     root = node;
 }
+Tree::Tree(string word) {
+    if (is_valid(word)) {
+        parse(word);
+    } else {
+        cout << "Cannot parse\n";
+        root = NULL;
+    }
+}
 
+
+void Tree::parse(string word) {
+    root = NULL;
+}
 
 string Tree::split(string word, string by_letters) {
     string splitted_word = "";
@@ -25,105 +37,101 @@ string Tree::split(string word, string by_letters) {
             under_quote = !under_quote;
         }
         // miss under quote letters
-        if (under_quote == true || by_letters.find(word[i]) == string::npos) {
+        if (under_quote || by_letters.find(word[i]) == string::npos) {
             splitted_word += word[i];
         }
     }
     return splitted_word;
 }
 
-int Tree::get_bracket_end(string word, string brackets, int first) {
+unsigned long Tree::get_bracket_end(string word, string brackets, unsigned long first) {
     int counter = 0;
-    for (int it=first; it < word.length(); it++) {
+    for (unsigned long it=first; it < word.length(); it++) {
         if (word[it] == brackets[0]) counter++;
         else if (word[it] == brackets[1]) counter--;
         if (word[it] == brackets[1] && counter == 0)
             return it;
     }
-    return -1;
+    return 0;
 }
 
-int Tree::get_bracket_end(string word, string brackets) {
+unsigned long Tree::get_bracket_end(string word, string brackets) {
     int counter = 0;
-    for (int it=0; it < word.length(); it++) {
+    for (unsigned long it=0; it < word.length(); it++) {
         if (word[it] == brackets[0]) counter++;
         else if (word[it] == brackets[1]) counter--;
         if (word[it] == brackets[1] && counter == 0)
             return it;
     }
-    return -1;
+    return 0;
 }
 
-int Tree::get_bracket_begin(string word, string brackets) {
-    if (word.find('[') == string::npos)
-        return -1;
-    return word.find('[');
-}
-
-bool Tree::validate(string word) {
-    string splitted_word = split(word, " \n\t");
-    
-    int len = splitted_word.length(), pos, first, last;
+bool Tree::is_valid(string sentence) {
     string name, quantity, objects;
     vector <string> items;
-    bool result = true;
-    first = 0;
-    last = get_bracket_end(splitted_word, "[]");
+    unsigned long pos;
 
-    if (splitted_word[0] != '[' || last == -1) {
+    string word = split(sentence, " \n\t");
+    bool result = true;
+    unsigned long first = 0;
+    unsigned long last = get_bracket_end(word, "[]");
+
+    if (word[0] != '[' || last == 0) {
         return false;
     }
 
-    while (first < splitted_word.length() && splitted_word[first] == '[' && last != -1) {
-        items.push_back(splitted_word.substr(first, last + 1));
-        first = last + 2; // except 
-        last = get_bracket_end(splitted_word, "[]", first);
+    while (first < word.length() && word[first] == '[' && last != 0) {
+        items.push_back(word.substr(first, last + 1));
+        first = last + 2; // miss comma
+        last = get_bracket_end(word, "[]", first);
 
     }
     for(int i=0; i < items.size(); i++) {
-        splitted_word = items[i];
+        word = items[i];
+        last = get_bracket_end(word, "[]");
 
         // check brackets
-        if (splitted_word[0] != '[' || get_bracket_end(splitted_word, "[]") == -1) {
+        if (word[0] != '[' || last == 0) {
             return false;
         }
 
         // miss brackets
-        splitted_word = splitted_word.substr(1, get_bracket_end(splitted_word, "[]") - 1);
+        word = word.substr(1, last - 1);
 
         // get comma pos
-        pos = splitted_word.find(',');
+        pos = word.find(',');
 
         // check quotes
-        if (splitted_word[0] != '"' || splitted_word[pos - 1] != '"') {
+        if (word[0] != '"' || word[pos - 1] != '"') {
             return false;
         }
 
         // get name without quotes
-        name = splitted_word.substr(1, pos - 2);
+        name = word.substr(1, pos - 2);
 
         // miss name and comma 
-        splitted_word = splitted_word.substr(pos + 1);
+        word = word.substr(pos + 1);
 
         // get comma pos
-        pos = splitted_word.find(',');
+        pos = word.find(',');
 
         // get quantity
-        quantity = splitted_word.substr(0, pos);
+        quantity = word.substr(0, pos);
 
         // miss comma
-        splitted_word = splitted_word.substr(pos + 1);
+        word = word.substr(pos + 1);
 
-        // check roundbrackets 
-        if (splitted_word[0] != '(' || get_bracket_end(splitted_word, "()") == -1) {
+        last = get_bracket_end(word, "()");
+        // check round brackets
+        if (word[0] != '(' || last == 0) {
             return false;
         }
 
         // miss brackets
-        objects = splitted_word.substr(1, get_bracket_end(splitted_word, "()") - 1);
+        objects = word.substr(1, last - 1);
 
         if (objects != "") {
-            result &= validate(objects);
+            result &= is_valid(objects);
         }
     }
 
