@@ -19,6 +19,7 @@ private:
     int count(Node* node, string name);
 
     void print_object(Node* node, int offset);
+    void print_object_leaf(Node* node, string path);
 
     map<string, double> count_items(map <string, double> items, Node* node);
 
@@ -35,10 +36,14 @@ public:
     Node* find(string name);
     Node* find(Node* node, string name);
 
+    double get_quantity(string name);
+
     void parse(string sentence);
 
     void print_sumarize();
     void print_tree();
+    void print_leafs();
+    void print_item_quantity(string name);
 
     static string split(string word, string by_letters);
     static unsigned long get_bracket_end(string word, string brackets);

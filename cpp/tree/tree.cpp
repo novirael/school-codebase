@@ -17,6 +17,7 @@ Tree::Tree(Node* node) {
 Tree::Tree(string word) {
     if (is_valid(word)) {
         parse(word);
+        cout << "Tree successfully created\n";
     } else {
         cout << "cannot parse\n";
         root = nullptr;
@@ -28,6 +29,8 @@ Tree::~Tree() {
 
 int Tree::count(Node* node, string name) {
     int q = 0;
+    cout << root->name << '\n';
+    cout << "|" << name << " " << node->name << "|";
     if (node->name == name) { q++; }
     vector <Node*> children = node->get_children();
     for(int i=0; i <children.size(); i++) {
@@ -36,6 +39,25 @@ int Tree::count(Node* node, string name) {
     return q;
 }
 
+double Tree::get_quantity(string name) {
+    if (count(root, name) > 1) {
+        map<string, double> m_items;
+        m_items = count_items(m_items, root);
+        return m_items[find(root, name)->name];
+    } else {
+        return 0;
+    }
+}
+
+void Tree::print_item_quantity(string name) {
+    double quantity = get_quantity(name);
+    if (quantity != 0) {
+        cout << quantity << '\n';
+    }
+    else {
+        cout << "Item not found" << '\n';
+    }
+}
 
 Node* Tree::find(string name) {
     if (count(root, name) == 1) {
@@ -61,7 +83,7 @@ Node* Tree::find(Node* node, string name) {
 
 
 void Tree::insert(Node* node) {
-    if (root == nullptr) {
+    if (node == nullptr) {
         root = node;
     }
     else {
@@ -70,7 +92,7 @@ void Tree::insert(Node* node) {
 }
 
 void Tree::insert(Node* node, Node* parent) {
-    if (!parent) {
+    if (parent == nullptr) {
         root = node;
     }
     else {
@@ -81,7 +103,9 @@ void Tree::insert(Node* node, Node* parent) {
 void Tree::insert(Node* node, string name) {
     Node* parent = find(name);
     if (parent == nullptr) {
-        cout << "not found " << name << "\n";
+        cout << "Parent not found " << name << "\n";
+    } else if (name == "") {
+        insert(node);
     } else {
         insert(node, parent);
     }
@@ -189,10 +213,14 @@ void Tree::parse(string sentence, Node* parent) {
 }
 
 void Tree::print_sumarize() {
-    map <string, double> m_items;
-    m_items = count_items(m_items, root);
-    for (auto it=m_items.begin(); it!=m_items.end(); ++it) {
-        cout << it->first << " : " << it->second << '\n';
+    if (root == nullptr) {
+        cout << "There is no root!" << '\n';
+    } else {
+        map<string, double> m_items;
+        m_items = count_items(m_items, root);
+        for (auto it = m_items.begin(); it != m_items.end(); ++it) {
+            cout << it->first << " : " << it->second << '\n';
+        }
     }
 
 }
@@ -214,8 +242,34 @@ map<string, double> Tree::count_items(map<string, double> items, Node* node) {
 
 
 void Tree::print_tree() {
-    print_object(root, 0);
+    if (root == nullptr) {
+        cout << "There is no root!" << '\n';
+    } else {
+        print_object(root, 0);
+    }
 }
+
+void Tree::print_leafs() {
+    if (root == nullptr) {
+        cout << "There is no root!" << '\n';
+    } else {
+        print_object_leaf(root, "");
+    }
+}
+
+void Tree::print_object_leaf(Node* node, string path) {
+    vector <Node*> children = node->get_children();
+    if (children.empty()) {
+        cout << path + node->name << '\n';
+    }
+    else {
+        path +=  node->name + " -> ";
+        for(int i=0; i <children.size(); i++) {
+            print_object_leaf(children[i], path);
+        }
+    }
+}
+
 
 void Tree::print_object(Node* node, int offset) {
     offset++;
@@ -225,7 +279,7 @@ void Tree::print_object(Node* node, int offset) {
         indent += " ";
     }
 
-    cout << indent << node->name << " " << node->quantity;
+    cout << indent << node->name << " " << node->quantity << '\n';
 
     vector <Node*> children = node->get_children();
     for(int i=0; i <children.size(); i++) {
