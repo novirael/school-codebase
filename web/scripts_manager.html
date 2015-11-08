@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Tekst na stronie</title>
+
+    <meta name="keywords" content="kurs html, webowe">
+    <meta name="description" content="To jest opis tej strony">
+</head>
+<body>
+    <nav>
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="form_personal.html">Personal Form</a></li>
+            <li><a href="form_additional.html">Additional Form</a></li>
+            <li><a href="scripts_manager.html">Scripts Manager</a></li>
+        </ul>
+    </nav>
+    <section>
+        <article>
+            <h2 id="formHeadText">Scripts Manager</h2>
+            <form>
+                <label>Simple math operations in alerts</label>
+                <button type="button" onclick="calculate()">Calculate</button>
+                <br />
+                <label>Change header</label>
+                <button type="button" onclick="changeHeader()">Change</button>
+                <br />
+                <label>Change Mario</label>
+                <button id="marioChange" type="button" onclick="changeMarioToHead()">Change</button>
+                <br />
+                <label>Generate 8 digits random number</label>
+                <button type="button" onclick="randomNumber()">Generate</button>
+                <br />
+                <input type="number" id="numInput">
+                <br />
+            </form>
+        </article>
+        <article>
+            <h2>This is Mario</h2>
+            <img id="marioImage" src="img/mario-jumping.png" alt="Mario image" />
+        </article>
+        <article>
+            <p id="windowRes">Resize window</p>
+        </article>
+    </section>
+    <footer>
+        <hr />
+        <p>&copy; Copyright Company Name</p>
+    </footer>
+
+    <script type="text/javascript" src="js/source.js"></script>
+
+
+</body>
+</html>
