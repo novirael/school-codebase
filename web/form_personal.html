@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Tekst na stronie</title>
+
+    <meta name="keywords" content="kurs html, webowe">
+    <meta name="description" content="To jest opis tej strony">
+</head>
+<body>
+    <nav>
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="form_personal.html">Personal Form</a></li>
+            <li><a href="form_additional.html">Additional Form</a></li>
+        </ul>
+    </nav>
+    <section>
+        <article>
+            <h2>Personal Form</h2>
+            <form autocomplete="on">
+                <label>First Name</label>
+                <input type="text" name="first_name">
+                <br/>
+
+                <label>Last Name</label>
+                <input type="text" name="last_name" required>
+                <br/>
+
+                <label>Month of Bith</label>
+                <input name="month" list="months">
+
+                <datalist id="months">
+                  <option value="January">
+                  <option value="February">
+                  <option value="March">
+                  <option value="December">
+                </datalist>
+                <br/>
+
+                <label>Email</label>
+                <input type="email" name="email" required>
+                <br/>
+
+                <label>Telephone</label>
+                <input type="tel" name="telephone" pattern="^(?:0|\(?\+48\)?\s?|0048\s?)[1-79](?:[\.\-\s]?\d\d){4}$">
+                <br/>
+
+                <button type="submit">Save</button>
+                <button>Clear</button>
+
+            </form>
+        </article>
+    </section>
+    <footer>
+        <hr />
+        <p>&copy; Copyright Company Name</p>
+    </footer>
+</body>
+</html>

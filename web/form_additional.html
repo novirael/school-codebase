@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Tekst na stronie</title>
+
+    <meta name="keywords" content="kurs html, webowe">
+    <meta name="description" content="To jest opis tej strony">
+</head>
+<body>
+    <nav>
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="form_personal.html">Personal Form</a></li>
+            <li><a href="form_additional.html">Additional Form</a></li>
+        </ul>
+    </nav>
+    <section>
+        <article>
+            <h2>Additional Form</h2>
+            <form autocomplete="on">
+                <label>Company</label>
+                <input type="text" name="company_name" placeholder="e.g YourCompany Ltd" required>
+                <br/>
+
+                <label>Position</label>
+                <input type="text" name="company_position" placeholder="e.g. Software Developer" required>
+                <br/>
+
+                <label>Started work (month)</label>
+                <input type="month" name="month" required>
+                <br/>
+
+                <label>Homepage</label>
+                <input type="url" name="homepage" placeholder="http://example.com">
+                <br/>
+
+                <label>Favourite color</label>
+                <input type="color" name="color">
+                <br/>
+
+                <label>Analytics Skill</label>
+                <input type="range" name="skill" min="0" max="100" step ="5" value ="50" />
+                <br/>
+
+                <label>Google Search</label>
+                <input type="search" name="search" placeholder="You can type there query to Google">
+                <br/>
+
+                <button type="submit">Save</button>
+                <button>Clear</button>
+
+            </form>
+        </article>
+    </section>
+    <footer>
+        <hr />
+        <p>&copy; Copyright Company Name</p>
+    </footer>
+</body>
+</html>
