@@ -43,6 +43,30 @@
         <article>
             <p id="windowRes">Resize window</p>
         </article>
+        <article>
+            <h2>Operations on DOM</h2>
+            <div>
+                <button type="button" onclick="myCreate()">Add item to list</button>
+            </div>
+            <div>
+                <button type="button" onclick="myInsertBefore()">Insert before</button>
+                <input placeholder="item number" id="insertBeforeNum" type="number">
+            </div>
+            <div>
+                <button type="button" onclick="myReplaceChild()">Replace</button>
+                <input placeholder="new item number" id="replaceNew" type="number">
+                with
+                <input placeholder="existing item number" id="replaceOld" type="number">
+            </div>
+            <div>
+                <button type="button" onclick="myRemoveChild()">Remove</button>
+                <input placeholder="item number" id="removeTarget" type="number">
+            </div>
+            <div id="domAndEvents">
+                <span id="logging"></span>
+                <ul id="myList"></ul>
+            </div>
+        </article>
     </section>
     <footer>
         <hr />
@@ -50,6 +74,7 @@
     </footer>
 
     <script type="text/javascript" src="js/source.js"></script>
+    <script type="text/javascript" src="js/ondom.js"></script>
 
 
 </body>
