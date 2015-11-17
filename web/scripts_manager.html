@@ -19,7 +19,7 @@
     <section>
         <article>
             <h2 id="formHeadText">Scripts Manager</h2>
-            <form>
+            <form id="firstList">
                 <label>Simple math operations in alerts</label>
                 <button type="button" onclick="calculate()">Calculate</button>
                 <br />
@@ -67,15 +67,51 @@
                 <ul id="myList"></ul>
             </div>
         </article>
+        <article>
+            <h2>Collections</h2>
+            <button type="button" onclick="myCollections()">Load</button>
+            <h3>Images</h3>
+            <ul id="images"></ul>
+            <h3>Links</h3>
+            <ul id="links"></ul>
+            <h3>Forms</h3>
+            <ul id="forms"></ul>
+            <h3>Anchors</h3>
+            <ul id="anchors"></ul>
+        </article>
+        <article>
+            <h2>Styles</h2>
+            <form id="formStyles">
+                <div>
+                    <label>Change background color</label>
+                    <input id="changeBgColor" type="color" name="color" value="#ffffff">
+                </div>
+                <div>
+                    <label>Change headline color</label>
+                    <input id="changeHeadColor" type="color" name="color">
+                </div>
+                <div>
+                    <label>Change fonts style</label>
+                    <select id="changeFonts">
+                        <option value="initial">initial</option>
+                        <option value="cursive">cursive</option>
+                        <option value="fantasy">fantasy</option>
+                        <option value="monospace">monospace</option>
+                    </select>
+                </div>
+                <button id="changeSubmit" onclick="handleChangeSubmit()" type="button">Change</button>
+            </form>
+        </article>
     </section>
     <footer>
         <hr />
-        <p>&copy; Copyright Company Name</p>
+        <p>&copy; Copyright Company Name <a name="a1">Anchor 1</a><a name="a2">Anchor 2</a></p>
     </footer>
 
     <script type="text/javascript" src="js/source.js"></script>
     <script type="text/javascript" src="js/ondom.js"></script>
-
+    <script type="text/javascript" src="js/collections.js"></script>
+    <script type="text/javascript" src="js/personalisation.js"></script>
 
 </body>
 </html>
