@@ -1,19 +1,25 @@
 import time
-import copy
+import csv
+import sys
+
 
 class QueenBacktracking(object):
     board = None
-    solutions = []
     deep = 0
     start_time = None
+    filewriter = None
 
     def __init__(self, n):
         self.board = [[0 for _ in range(n)] for _ in range(n)]
 
     def resolve(self):
-        self.start_time = time.time()
-        self._try_to_put_queen(0)
-        self._preview_board()
+        filename = 'queens-backtracking-%d.csv' % len(self.board)
+        with open(filename, 'w') as file:
+            self.filewriter = csv.writer(file)
+            self.filewriter.writerow(['board', 'duration', 'max_deep'])
+
+            self.start_time = time.time()
+            self._try_to_put_queen(0)
 
     def _try_to_put_queen(self, row):
         self.deep += 1
@@ -21,11 +27,16 @@ class QueenBacktracking(object):
         max_size = len(self.board)
         print(row >= max_size)
         if row >= max_size:
-            self.solutions.append({
-                "board": copy.deepcopy(self.board),
-                "max_deep": self.deep,
-                "duration": time.time() - self.start_time
-            })
+            self._preview_board()
+            board_str = '\n'.join([
+                ' '.join(map(str, _row))
+                for _row in self.board
+            ])
+            self.filewriter.writerow([
+                board_str,
+                time.time() - self.start_time,
+                self.deep,
+            ])
             self.deep = 0
             self.start_time = time.time()
         else:
@@ -50,14 +61,13 @@ class QueenBacktracking(object):
         return True
 
     def _preview_board(self):
-        for solution in self.solutions:
-            for row in solution['board']:
-                for column in row:
-                    print(str(column) + ' ', end="")
-                print()
+        for row in self.board:
+            for column in row:
+                print(str(column) + ' ', end="")
             print()
+        print()
 
 
 if __name__ == "__main__":
-    backtracking = QueenBacktracking(4)
+    backtracking = QueenBacktracking(sys.argv[0])
     backtracking.resolve()
