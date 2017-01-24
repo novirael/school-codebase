@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 
 import sys
 import string
@@ -7,6 +7,13 @@ import logging
 
 from math import ceil
 from getpass import getpass
+
+from PyQt5.QtWidgets import (
+    QWidget,
+    QToolTip,
+    QPushButton,
+    QApplication,
+    QLineEdit, QFileDialog, QMessageBox, QLabel)
 
 log = logging.getLogger(__name__)
 
@@ -19,9 +26,10 @@ logging.basicConfig(
 
 
 class Encryption(object):
-    alphabet = string.ascii_letters
+    alphabet = "".join(chr(x) for x in range(128))
     data = None
     key = ''
+    extra_chars = ''
 
     def __init__(self, file_path, password):
         self.file_path = file_path
@@ -33,9 +41,9 @@ class Encryption(object):
             self.data = file.read()
         log.debug("Data: %s", self.data)
 
-    def save(self):
-        log.info("Saving file: %r", self.file_path)
-        with open(self.file_path, 'r+') as file:
+    def save(self, postfix=""):
+        log.info("Saving file: %r", self.file_path + postfix)
+        with open(self.file_path + postfix, 'w+') as file:
             file.seek(0)
             file.write(self.data)
         log.debug("Data: %s", self.data)
@@ -53,7 +61,7 @@ class Encryption(object):
 
             # Last block will be filled in with  first letters
             if len(chunk) < block_size:
-                missing_chars = self.data[:block_size - len(chunk)]
+                missing_chars = '.' * (block_size - len(chunk))
                 log.debug(
                     "Filling in last block with characters: %s",
                     missing_chars
@@ -83,14 +91,15 @@ class Encryption(object):
     def revert_permutation(self):
         log.info("Reverting permutation.")
 
-        block_size = len(password)
+        block_size = len(self.password)
         blocks_amount = int(ceil(len(self.data) / block_size))
         blocks = self.get_blocks(blocks_amount, block_size)
         new_data = ''
 
         for idx in range(block_size):
             for block in blocks:
-                new_data += block[idx]
+                if block[idx] != '.':
+                    new_data += block[idx]
 
         self.data = new_data
         log.debug("New data: %s", self.data)
@@ -99,7 +108,7 @@ class Encryption(object):
         log.info("Generating key.")
 
         data_length = len(self.data)
-        repeat_times = int(ceil(data_length / len(password)))
+        repeat_times = int(ceil(data_length / len(self.password)))
 
         log.debug("Data length: %s", data_length)
 
@@ -175,27 +184,122 @@ class Encryption(object):
         self.make_permutation()
         self.generate_key()
         self.make_polymorphism()
-        self.save()
+        self.save(postfix='-encoded')
 
     def decode(self):
         self.read()
         self.generate_key()
         self.revert_polymorphism()
         self.revert_permutation()
-        self.save()
+        self.save(postfix='-decoded')
 
 
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description='File encryption')
-    parser.add_argument('file_path', help='File location')
-    parser.add_argument('--encode', help='Encode', action='store_false')
-    parser.add_argument('--decode', help='Decode', action='store_false')
-    args = parser.parse_args()
+# if __name__ == "__main__":
+#     parser = argparse.ArgumentParser(description='File encryption')
+#     parser.add_argument('file_path', help='File location')
+#     parser.add_argument('--encode', help='Encode', action='store_true')
+#     parser.add_argument('--decode', help='Decode', action='store_true')
+#     args = parser.parse_args()
+#
+#     password = getpass()
+#     enc = Encryption(args.file_path, password)
+#
+#     if args.decode:
+#         enc.decode()
+#     elif args.encode:
+#         enc.encode()
 
-    password = getpass()
-    enc = Encryption(args.file_path, password)
 
-    if args.decode:
-        enc.decode()
-    elif args.encode:
-        enc.encode()
+class Example(QWidget):
+    
+    def __init__(self):
+        super(Example, self).__init__()
+
+        self.initUI()
+
+    def initUI(self):
+
+        input_label = QLabel("Select file path", self)
+        input_label.move(50, 25)
+
+        self.input_filepath = QLineEdit(self)
+        self.input_filepath.move(50, 50)
+        self.input_filepath.setReadOnly(True)
+        self.input_filepath.resize(225, 20)
+
+        btn_upload = QPushButton('Select', self)
+        btn_upload.move(285, 45)
+        btn_upload.clicked.connect(self.handle_upload)
+
+        input_label = QLabel("Insert your password", self)
+        input_label.move(50, 80)
+
+        self.input_pwd = QLineEdit(self)
+        self.input_pwd.setEchoMode(QLineEdit.Password)
+        self.input_pwd.move(50, 105)
+        self.input_pwd.resize(225, 20)
+
+        btn = QPushButton('Encode', self)
+        btn.move(175, 150)
+        btn.clicked.connect(self.handle_encode)
+
+        btn = QPushButton('Decode', self)
+        btn.clicked.connect(self.handle_decode)
+        btn.move(50, 150)
+
+        self.setGeometry(500, 500, 400, 220)
+        self.setWindowTitle('Code')
+        self.show()
+
+    def validate_inputs(self):
+        if not self.input_filepath.text() or not self.input_pwd.text():
+            msg = QMessageBox(self)
+            msg.setIcon(QMessageBox.Warning)
+            msg.setText("You should provide file path and password.")
+            msg.setWindowTitle("Validation")
+            msg.exec_()
+            return False
+        return True
+
+    def handle_encode(self):
+        if self.validate_inputs():
+            enc = Encryption(
+                self.input_filepath.text(),
+                self.input_pwd.text()
+            )
+            enc.encode()
+
+            msg = QMessageBox(self)
+            msg.setIcon(QMessageBox.Information)
+            msg.setText("File encoded")
+            msg.setWindowTitle("Encoding")
+            msg.exec_()
+
+    def handle_decode(self):
+        if self.validate_inputs():
+            enc = Encryption(
+                self.input_filepath.text(),
+                self.input_pwd.text()
+            )
+            enc.decode()
+
+            msg = QMessageBox(self)
+            msg.setIcon(QMessageBox.Information)
+            msg.setText("File decoded")
+            msg.setWindowTitle("Decoding")
+            msg.exec_()
+
+    def handle_upload(self):
+        filename = QFileDialog.getOpenFileName(
+            self, "File", "."
+        )
+        if filename[0]:
+            self.input_filepath.setText(filename[0])
+            print('Path file :', filename)
+        self.show()
+
+
+if __name__ == '__main__':
+    app = QApplication(sys.argv)
+    ex = Example()
+    app.exec_()
