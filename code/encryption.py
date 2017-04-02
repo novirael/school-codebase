@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 
 import sys
+import os
 import string
 import argparse
 import logging
@@ -21,7 +22,7 @@ log = logging.getLogger(__name__)
 logging.basicConfig(
     format='%(levelname)s: %(name)s:%(lineno)s: %(message)s',
     stream=sys.stdout,
-    level=logging.DEBUG,
+    level=logging.ERROR,
 )
 
 
@@ -184,30 +185,15 @@ class Encryption(object):
         self.make_permutation()
         self.generate_key()
         self.make_polymorphism()
-        self.save(postfix='-encoded')
+        os.remove(self.file_path)
+        self.save()
 
     def decode(self):
         self.read()
         self.generate_key()
         self.revert_polymorphism()
         self.revert_permutation()
-        self.save(postfix='-decoded')
-
-
-# if __name__ == "__main__":
-#     parser = argparse.ArgumentParser(description='File encryption')
-#     parser.add_argument('file_path', help='File location')
-#     parser.add_argument('--encode', help='Encode', action='store_true')
-#     parser.add_argument('--decode', help='Decode', action='store_true')
-#     args = parser.parse_args()
-#
-#     password = getpass()
-#     enc = Encryption(args.file_path, password)
-#
-#     if args.decode:
-#         enc.decode()
-#     elif args.encode:
-#         enc.encode()
+        self.save(postfix='-decrypted')
 
 
 class Example(QWidget):
@@ -239,13 +225,17 @@ class Example(QWidget):
         self.input_pwd.move(50, 105)
         self.input_pwd.resize(225, 20)
 
-        btn = QPushButton('Encode', self)
+        btn = QPushButton('Encryption', self)
         btn.move(175, 150)
         btn.clicked.connect(self.handle_encode)
 
-        btn = QPushButton('Decode', self)
+        btn = QPushButton('Decryption', self)
         btn.clicked.connect(self.handle_decode)
         btn.move(50, 150)
+
+        btn = QPushButton('Info', self)
+        btn.clicked.connect(self.handle_info)
+        btn.move(300, 150)
 
         self.setGeometry(500, 500, 400, 220)
         self.setWindowTitle('Code')
@@ -269,10 +259,13 @@ class Example(QWidget):
             )
             enc.encode()
 
+            self.input_pwd.setText("")
+            self.input_filepath.setText("")
+
             msg = QMessageBox(self)
             msg.setIcon(QMessageBox.Information)
-            msg.setText("File encoded")
-            msg.setWindowTitle("Encoding")
+            msg.setText("File encrypted")
+            msg.setWindowTitle("Encryption")
             msg.exec_()
 
     def handle_decode(self):
@@ -283,11 +276,25 @@ class Example(QWidget):
             )
             enc.decode()
 
+            self.input_pwd.setText("")
+            self.input_filepath.setText("")
+
             msg = QMessageBox(self)
             msg.setIcon(QMessageBox.Information)
-            msg.setText("File decoded")
-            msg.setWindowTitle("Decoding")
+            msg.setText("File decrypted")
+            msg.setWindowTitle("Decryption")
             msg.exec_()
+
+    def handle_info(self):
+        msg = QMessageBox(self)
+        msg.setIcon(QMessageBox.Information)
+        msg.setText(
+            "1. Decoded or Encoded file is saved in the same directory as you select file.\n"
+            "2. Newly created file has '-decoded' or '-encoded' prefix.\n"
+            "3. Key should be non empty ascii value.\n"
+        )
+        msg.setWindowTitle("Info")
+        msg.exec_()
 
     def handle_upload(self):
         filename = QFileDialog.getOpenFileName(
@@ -295,7 +302,7 @@ class Example(QWidget):
         )
         if filename[0]:
             self.input_filepath.setText(filename[0])
-            print('Path file :', filename)
+            log.debug('Path file :', filename)
         self.show()
 
 
